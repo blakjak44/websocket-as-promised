@@ -304,6 +304,7 @@ class WebSocketAsPromised {
 
   _createWS() {
     this._ws = this._options.createWebSocket(this._url);
+    this._ws.binaryType = this._options.binaryType
     this._wsSubscription = new Channel.Subscription([
       { channel: this._ws, event: 'open', listener: e => this._handleOpen(e) },
       { channel: this._ws, event: 'message', listener: e => this._handleMessage(e) },
@@ -324,12 +325,20 @@ class WebSocketAsPromised {
   }
 
   _tryUnpack(data) {
-    if (this._options.unpackMessage) {
-      data = this._options.unpackMessage(data);
-      if (data !== undefined) {
-        this._onUnpackedMessage.dispatchAsync(data);
-        this._tryHandleResponse(data);
+    if (data instanceof Blob || data instanceof ArrayBuffer) {
+      if (this._options.unpackBinaryMessage) {
+        data = this._options.unpackBinaryMessage(data);
       }
+    }
+    else {
+      if (this._options.unpackMessage) {
+        data = this._options.unpackMessage(data);
+      }
+    }
+
+    if (data !== undefined) {
+      this._onUnpackedMessage.dispatchAsync(data);
+      this._tryHandleResponse(data);
     }
   }
 

@@ -36,6 +36,13 @@ module.exports = {
   createWebSocket: url => new WebSocket(url),
 
   /**
+   * See {@link Options.binaryType}
+   *
+   * @param {String} binary type for websocket instance
+   */
+  binaryType: 'blob',
+
+  /**
    * See {@link Options.packMessage}
    *
    * @param {*} data
@@ -50,6 +57,14 @@ module.exports = {
    * @returns {*}
    */
   unpackMessage: null,
+
+  /**
+   * See {@link Options.unpackMessage}
+   *
+   * @param {String|ArrayBuffer|Blob} data
+   * @returns {*}
+   */
+  unpackBinaryMessage: null,
 
   /**
    * See {@link Options.attachRequestId}
